@@ -1,8 +1,29 @@
-import React from 'react';
-import {View, Text, TextInput, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Animated} from 'react-native';
 import {Picker} from '@react-native-community/picker';
 
 export const Form = () => {
+
+  const [animationButton] = useState(new Animated.Value(1));
+
+  const animationIn = () => {
+    Animated.spring(animationButton, {
+      toValue: 0.75,
+    }).start();
+  };
+
+  const animationOut = () => {
+    Animated.spring(animationButton, {
+      toValue: 1,
+      friction: 4,
+      tension: 30,
+    }).start();
+  };
+
+  const styleAnimation = {
+    transform: [{scale: animationButton}],
+  };
+
   return (
     <>
       <View style={styles.form}>
@@ -21,10 +42,12 @@ export const Form = () => {
             <Picker.Item label="Perú" value="PE" />
           </Picker>
         </View>
-        <TouchableWithoutFeedback>
-          <View style={styles.button}>
+        <TouchableWithoutFeedback
+          onPressIn={() => animationIn()}
+          onPressOut={() => animationOut()}>
+          <Animated.View style={[styles.button, styleAnimation]}>
             <Text style={styles.buttonText}>Buscar Clima</Text>
-          </View>
+          </Animated.View>
         </TouchableWithoutFeedback>
       </View>
     </>
