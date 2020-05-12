@@ -1,10 +1,21 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Animated} from 'react-native';
+import {View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, Animated, Alert} from 'react-native';
 import {Picker} from '@react-native-community/picker';
 
-export const Form = () => {
-
+export const Form = ({search, search: {country, city}, setSearch, setRequest}) => {
   const [animationButton] = useState(new Animated.Value(1));
+
+  const getWeather = () => {
+    if(!country.trim() || !city.trim()) {
+      showAlert();
+      return;
+    }
+    setRequest(true);
+  };
+
+  const showAlert = () => {
+    Alert.alert('Error', 'Agrega un país y una ciudad a tu busqueda', [{text: 'Entendido'}]);
+  };
 
   const animationIn = () => {
     Animated.spring(animationButton, {
@@ -28,10 +39,19 @@ export const Form = () => {
     <>
       <View style={styles.form}>
         <View>
-          <TextInput style={styles.input} placeholder="Ciudad" placeholderTextColor="#666666" />
+          <TextInput
+            style={styles.input}
+            value={city}
+            onChangeText={(city) => setSearch({...search, city})}
+            placeholder="Ciudad"
+            placeholderTextColor="#666666"
+          />
         </View>
         <View>
-          <Picker itemStyle={styles.picker}>
+          <Picker
+            selectedValue={country}
+            onValueChange={(country) => setSearch({...search, country})}
+            itemStyle={styles.picker}>
             <Picker.Item label="-- Seleccione un país --" value="" />
             <Picker.Item label="México" value="MX" />
             <Picker.Item label="Estados Unidos" value="US" />
@@ -44,7 +64,8 @@ export const Form = () => {
         </View>
         <TouchableWithoutFeedback
           onPressIn={() => animationIn()}
-          onPressOut={() => animationOut()}>
+          onPressOut={() => animationOut()}
+          onPress={() => getWeather()}>
           <Animated.View style={[styles.button, styleAnimation]}>
             <Text style={styles.buttonText}>Buscar Clima</Text>
           </Animated.View>

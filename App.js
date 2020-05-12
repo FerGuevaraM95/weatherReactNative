@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -6,21 +6,62 @@ import {
   View,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from 'react-native';
 
 import {Form} from './components/Form';
 
-const hideKeyboard = () => {
-  Keyboard.dismiss();
-};
 
 const App = () => {
+
+  const [search, setSearch] = useState({
+    county: '',
+    city: '',
+  });
+  const [request, setRequest] = useState(false);
+  const [result, setResult] = useState({});
+
+  const {country, city} = search;
+
+  useEffect(() => {
+    const getWeather = async () => {
+      if (request) {
+        const appId = '417559bcf2313ef04d43f654c86481da';
+        const url = `http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${appId}`;
+
+        try {
+          const response = await fetch(url);
+          const result = await response.json();
+          setResult(result);
+          setRequest(false);
+        } catch (error) {
+          showAlert();
+        }
+      }
+    };
+    getWeather();
+  }, [request]);
+
+  const hideKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
+  const showAlert = () => {
+    Alert.alert('Error', 'No hay resultados, intenta con otro país o ciudad', [
+      {text: 'Entendido'},
+    ]);
+  };
+
   return (
     <>
       <TouchableWithoutFeedback onPress={() => hideKeyboard()}>
         <View style={styles.app}>
           <View style={styles.content}>
-            <Form />
+            <Form
+              search={search}
+              setSearch={setSearch}
+              setRequest={setRequest}
+            />
           </View>
         </View>
       </TouchableWithoutFeedback>
