@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 
+import {Weather} from './components/Weather';
 import {Form} from './components/Form';
 
 
@@ -20,6 +21,7 @@ const App = () => {
   });
   const [request, setRequest] = useState(false);
   const [result, setResult] = useState({});
+  const [bgColor, setBgColor] = useState('rgb(71, 149, 212)');
 
   const {country, city} = search;
 
@@ -34,6 +36,19 @@ const App = () => {
           const result = await response.json();
           setResult(result);
           setRequest(false);
+
+          // Change bg color
+          const KELVIN = 273.15;
+          const {main} = result;
+          const current = parseInt(main.temp - KELVIN);
+
+          if(current < 10) {
+            setBgColor('rgb(105, 108, 149)');
+          } else if (current >= 10 && current < 25) {
+            setBgColor('rgb(71, 149, 212)');
+          } else {
+            setBgColor('rgb(178, 28, 61)');
+          }
         } catch (error) {
           showAlert();
         }
@@ -52,11 +67,16 @@ const App = () => {
     ]);
   };
 
+  const bgColorApp = {
+    backgroundColor: bgColor,
+  }
+
   return (
     <>
       <TouchableWithoutFeedback onPress={() => hideKeyboard()}>
-        <View style={styles.app}>
+        <View style={[styles.app, bgColorApp]}>
           <View style={styles.content}>
+            <Weather result={result} />
             <Form
               search={search}
               setSearch={setSearch}
@@ -73,7 +93,6 @@ const styles = StyleSheet.create({
   app: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'rgb(71, 149, 212)',
   },
   content: {
     marginHorizontal: '2.5%',

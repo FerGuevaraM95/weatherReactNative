@@ -39,15 +39,6 @@ export const Form = ({search, search: {country, city}, setSearch, setRequest}) =
     <>
       <View style={styles.form}>
         <View>
-          <TextInput
-            style={styles.input}
-            value={city}
-            onChangeText={(city) => setSearch({...search, city})}
-            placeholder="Ciudad"
-            placeholderTextColor="#666666"
-          />
-        </View>
-        <View>
           <Picker
             selectedValue={country}
             onValueChange={(country) => setSearch({...search, country})}
@@ -61,6 +52,15 @@ export const Form = ({search, search: {country, city}, setSearch, setRequest}) =
             <Picker.Item label="España" value="ES" />
             <Picker.Item label="Perú" value="PE" />
           </Picker>
+        </View>
+        <View>
+          <TextInput
+            style={styles.input}
+            value={city}
+            onChangeText={(city) => setSearch({...search, city})}
+            placeholder="Ciudad"
+            placeholderTextColor="#666666"
+          />
         </View>
         <TouchableWithoutFeedback
           onPressIn={() => animationIn()}
@@ -77,13 +77,13 @@ export const Form = ({search, search: {country, city}, setSearch, setRequest}) =
 
 const styles = StyleSheet.create({
   input: {
-    marginBottom: 20,
     padding: 10,
     height: 50,
     textAlign: 'center',
     backgroundColor: '#FFFFFF',
   },
   picker: {
+    marginBottom: 20,
     height: 120,
     backgroundColor: '#FFFFFF',
   },
